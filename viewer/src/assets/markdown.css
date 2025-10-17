@@ -1,0 +1,134 @@
+/*
+  Markdown 渲染的通用样式（从 MarkdownViewer.vue 中抽取为全局样式）
+  说明：保持渲染内容在不同页面下的一致性。
+*/
+
+.markdown-content {
+  line-height: 1.8;
+  color: #2c3e50;
+}
+
+.markdown-content h1 {
+  font-size: 2.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  border-bottom: 2px solid #42b883;
+  padding-bottom: 0.5rem;
+}
+
+.markdown-content h2 {
+  font-size: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.markdown-content h3 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.8rem;
+  color: #2c3e50;
+}
+
+.markdown-content p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content code {
+  background: #f4f4f4;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  color: #e83e8c;
+}
+
+.markdown-content pre {
+  background: #2c3e50;
+  color: #f8f8f2;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.markdown-content pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: 0.9rem;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #42b883;
+  padding-left: 1rem;
+  margin-left: 0;
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.markdown-content a {
+  color: #42b883;
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 2rem 0;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #e0e0e0;
+  padding: 0.8rem;
+  text-align: left;
+}
+
+.markdown-content th {
+  background: #f8f9fa;
+  font-weight: 600;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .markdown-content h1 { font-size: 2rem; }
+  .markdown-content h2 { font-size: 1.5rem; }
+  .markdown-content h3 { font-size: 1.2rem; }
+  .markdown-content pre { padding: 0.8rem; font-size: 0.85rem; }
+  .markdown-content ul, .markdown-content ol { padding-left: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .markdown-content h1 { font-size: 1.5rem; }
+  .markdown-content h2 { font-size: 1.3rem; }
+  .markdown-content h3 { font-size: 1.1rem; }
+  .markdown-content pre { padding: 0.6rem; font-size: 0.8rem; }
+}

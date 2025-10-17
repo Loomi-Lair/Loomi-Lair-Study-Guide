@@ -1,99 +1,106 @@
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { marked } from 'marked';
-import DOMPurify from 'dompurify';
+import { ref, onMounted, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 
-const route = useRoute();
-const router = useRouter();
+// ===== 路由与状态 =====
+const route = useRoute()
+const router = useRouter()
 
-const content = ref('');
-const loading = ref(true);
-const guides = ref([]);
-const currentGuide = ref(null);
-const showSidebar = ref(false);
+const content = ref('')
+const loading = ref(true)
+const guides = ref([])
+const currentGuide = ref(null)
+const showSidebar = ref(false)
 
-// Configure marked for better rendering
+// ===== 第三方库配置 =====
+// 说明: 启用 GFM/换行/标题 ID 等, 以提升 Markdown 渲染质量
 marked.setOptions({
   breaks: true,
   gfm: true,
   headerIds: true,
-});
+})
 
+// ===== 数据获取 =====
 onMounted(async () => {
   try {
-    const response = await fetch('/markdown/index.json');
-    guides.value = await response.json();
-    await loadMarkdown();
+    const response = await fetch('/markdown/index.json')
+    guides.value = await response.json()
+    await loadMarkdown()
   } catch (error) {
-    console.error('Failed to load guides:', error);
-    loading.value = false;
+    console.error('加载指南索引失败:', error)
+    loading.value = false
   }
-});
+})
 
+// 当路由参数变化时, 重新加载对应 Markdown
 watch(() => route.params.id, () => {
-  loadMarkdown();
-});
+  loadMarkdown()
+})
 
+// ===== 方法: 加载 Markdown =====
 const loadMarkdown = async () => {
-  loading.value = true;
-  const guideId = route.params.id;
+  loading.value = true
+  const guideId = route.params.id
   
-  currentGuide.value = guides.value.find(g => g.id === guideId);
+  currentGuide.value = guides.value.find(g => g.id === guideId)
   
   if (!currentGuide.value) {
-    content.value = '# Guide not found\n\nThe requested guide could not be found.';
-    loading.value = false;
-    return;
+    content.value = '# 未找到文档\n\n请求的指南不存在。'
+    loading.value = false
+    return
   }
 
   try {
-    const response = await fetch(`/markdown/${currentGuide.value.file}`);
-    const text = await response.text();
-    content.value = text;
+    const response = await fetch(`/markdown/${currentGuide.value.file}`)
+    const text = await response.text()
+    content.value = text
   } catch (error) {
-    console.error('Failed to load markdown:', error);
-    content.value = '# Error loading guide\n\nFailed to load the markdown content.';
+    console.error('加载 Markdown 失败:', error)
+    content.value = '# 加载失败\n\n无法加载该文档内容。'
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
+// ===== 计算属性：渲染 HTML =====
 const renderedMarkdown = computed(() => {
-  const unsafeHtml = marked(content.value);
-  return DOMPurify.sanitize(unsafeHtml);
-});
+  const unsafeHtml = marked(content.value)
+  return DOMPurify.sanitize(unsafeHtml)
+})
 
+// ===== 事件处理 =====
 const goHome = () => {
-  router.push('/');
-};
+  router.push('/')
+}
 
 const selectGuide = (id) => {
-  router.push(`/guide/${id}`);
-  showSidebar.value = false;
-};
+  router.push(`/guide/${id}`)
+  showSidebar.value = false
+}
 
 const toggleSidebar = () => {
-  showSidebar.value = !showSidebar.value;
-};
+  showSidebar.value = !showSidebar.value
+}
 </script>
 
 <template>
   <div class="markdown-viewer">
     <nav class="navbar">
       <button @click="goHome" class="nav-button home-button">
-        🏠 Home
+        🏠 首页
       </button>
-      <h1 class="nav-title">{{ currentGuide?.title || 'Study Guide' }}</h1>
+      <h1 class="nav-title">{{ currentGuide?.title || '学习指南' }}</h1>
       <button @click="toggleSidebar" class="nav-button menu-button">
-        ☰ Menu
+        ☰ 目录
       </button>
     </nav>
 
     <div class="layout">
       <aside :class="['sidebar', { 'sidebar-open': showSidebar }]">
         <div class="sidebar-header">
-          <h2>All Guides</h2>
+          <h2>全部指南</h2>
           <button @click="toggleSidebar" class="close-button">✕</button>
         </div>
         <ul class="guide-list">
@@ -113,7 +120,7 @@ const toggleSidebar = () => {
       <main class="content">
         <div v-if="loading" class="loading">
           <div class="spinner"></div>
-          <p>Loading guide...</p>
+          <p>正在加载文档...</p>
         </div>
         <article v-else class="markdown-content" v-html="renderedMarkdown"></article>
       </main>
@@ -122,6 +129,7 @@ const toggleSidebar = () => {
 </template>
 
 <style scoped>
+/* ===== 页面布局与导航样式 ===== */
 .markdown-viewer {
   min-height: 100vh;
   display: flex;
@@ -340,168 +348,6 @@ const toggleSidebar = () => {
 
   .content {
     padding: 0.5rem;
-  }
-}
-</style>
-
-<style>
-/* Global styles for rendered markdown */
-.markdown-content {
-  line-height: 1.8;
-  color: #2c3e50;
-}
-
-.markdown-content h1 {
-  font-size: 2.5rem;
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: #2c3e50;
-  border-bottom: 2px solid #42b883;
-  padding-bottom: 0.5rem;
-}
-
-.markdown-content h2 {
-  font-size: 2rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  color: #2c3e50;
-}
-
-.markdown-content h3 {
-  font-size: 1.5rem;
-  margin-top: 1.5rem;
-  margin-bottom: 0.8rem;
-  color: #2c3e50;
-}
-
-.markdown-content p {
-  margin-bottom: 1rem;
-  line-height: 1.8;
-}
-
-.markdown-content ul,
-.markdown-content ol {
-  margin-bottom: 1rem;
-  padding-left: 2rem;
-}
-
-.markdown-content li {
-  margin-bottom: 0.5rem;
-}
-
-.markdown-content code {
-  background: #f4f4f4;
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.9em;
-  color: #e83e8c;
-}
-
-.markdown-content pre {
-  background: #2c3e50;
-  color: #f8f8f2;
-  padding: 1rem;
-  border-radius: 6px;
-  overflow-x: auto;
-  margin-bottom: 1rem;
-}
-
-.markdown-content pre code {
-  background: none;
-  padding: 0;
-  color: inherit;
-  font-size: 0.9rem;
-}
-
-.markdown-content blockquote {
-  border-left: 4px solid #42b883;
-  padding-left: 1rem;
-  margin-left: 0;
-  color: #7f8c8d;
-  font-style: italic;
-}
-
-.markdown-content a {
-  color: #42b883;
-  text-decoration: none;
-}
-
-.markdown-content a:hover {
-  text-decoration: underline;
-}
-
-.markdown-content hr {
-  border: none;
-  border-top: 1px solid #e0e0e0;
-  margin: 2rem 0;
-}
-
-.markdown-content table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-}
-
-.markdown-content th,
-.markdown-content td {
-  border: 1px solid #e0e0e0;
-  padding: 0.8rem;
-  text-align: left;
-}
-
-.markdown-content th {
-  background: #f8f9fa;
-  font-weight: 600;
-}
-
-.markdown-content img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 6px;
-}
-
-/* Mobile responsive for markdown content */
-@media (max-width: 768px) {
-  .markdown-content h1 {
-    font-size: 2rem;
-  }
-
-  .markdown-content h2 {
-    font-size: 1.5rem;
-  }
-
-  .markdown-content h3 {
-    font-size: 1.2rem;
-  }
-
-  .markdown-content pre {
-    padding: 0.8rem;
-    font-size: 0.85rem;
-  }
-
-  .markdown-content ul,
-  .markdown-content ol {
-    padding-left: 1.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .markdown-content h1 {
-    font-size: 1.5rem;
-  }
-
-  .markdown-content h2 {
-    font-size: 1.3rem;
-  }
-
-  .markdown-content h3 {
-    font-size: 1.1rem;
-  }
-
-  .markdown-content pre {
-    padding: 0.6rem;
-    font-size: 0.8rem;
   }
 }
 </style>
