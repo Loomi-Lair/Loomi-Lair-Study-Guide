@@ -57,7 +57,7 @@ const loadMarkdown = async () => {
     const text = await response.text()
     content.value = text
   } catch (error) {
-    console.error('加载 Markdown 失败:', error)
+    console.error('加载 markdown 失败:', error)
     content.value = '# 加载失败\n\n无法加载该文档内容。'
   } finally {
     loading.value = false
