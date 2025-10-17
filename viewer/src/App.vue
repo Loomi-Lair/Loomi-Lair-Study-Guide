@@ -9,6 +9,4 @@ import { RouterView } from 'vue-router'
 
 <style>
 /* 将通用样式上移到全局样式文件，避免在根组件重复定义 */
-* { box-sizing: border-box; }
-body { margin: 0; }
 </style>
