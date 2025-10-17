@@ -1,0 +1,20 @@
+[
+  {
+    "id": "getting-started",
+    "title": "Getting Started",
+    "description": "Introduction to the study guide platform",
+    "file": "getting-started.md"
+  },
+  {
+    "id": "javascript-basics",
+    "title": "JavaScript Basics",
+    "description": "Fundamental concepts of JavaScript programming",
+    "file": "javascript-basics.md"
+  },
+  {
+    "id": "vue-fundamentals",
+    "title": "Vue.js Fundamentals",
+    "description": "Core concepts and features of Vue.js",
+    "file": "vue-fundamentals.md"
+  }
+]
