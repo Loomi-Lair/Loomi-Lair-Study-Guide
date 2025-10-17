@@ -2,6 +2,7 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 
 const route = useRoute();
 const router = useRouter();
@@ -59,7 +60,8 @@ const loadMarkdown = async () => {
 };
 
 const renderedMarkdown = computed(() => {
-  return marked(content.value);
+  const html = marked(content.value);
+  return DOMPurify.sanitize(html);
 });
 
 const goHome = () => {
