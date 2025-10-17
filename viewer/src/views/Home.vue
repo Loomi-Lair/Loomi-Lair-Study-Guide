@@ -56,8 +56,8 @@ onMounted(async () => {
   try {
     const response = await fetch('/markdown/index.json')
     guides.value = await response.json()
-  } catch (error) {
   // 失败时仅记录日志, 不阻断渲染
+  } catch (error) {
     console.error('加载指南索引失败:', error)
   } finally {
     loading.value = false
