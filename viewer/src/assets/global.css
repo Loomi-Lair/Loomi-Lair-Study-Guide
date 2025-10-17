@@ -1,0 +1,47 @@
+/*
+  全局样式（遵循 LoomiLair 规范）
+  - 字体栈
+  - 页面背景与文本颜色
+  - 一些可读性增强设置
+*/
+
+:root {
+  /* 全局字体（规范要求） */
+  font-family: "San Francisco", "Open Sans", "思源黑体 CN", "Noto Sans SC", "Source Han Sans CN", sans-serif;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  /* 背景与文字颜色（规范要求） */
+  background: #fafafa;
+  color: #222;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* 链接默认语义色，hover 有轻微反馈 */
+a {
+  color: #42b883;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 容器宽度限制（页面居中） */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}

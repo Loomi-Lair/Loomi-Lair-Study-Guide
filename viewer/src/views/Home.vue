@@ -1,56 +1,22 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-const guides = ref([]);
-const searchQuery = ref('');
-const loading = ref(true);
-
-onMounted(async () => {
-  try {
-    const response = await fetch('/markdown/index.json');
-    guides.value = await response.json();
-  } catch (error) {
-    console.error('Failed to load guides:', error);
-  } finally {
-    loading.value = false;
-  }
-});
-
-const filteredGuides = () => {
-  if (!searchQuery.value) return guides.value;
-  const query = searchQuery.value.toLowerCase();
-  return guides.value.filter(guide => 
-    guide.title.toLowerCase().includes(query) || 
-    guide.description.toLowerCase().includes(query)
-  );
-};
-
-const openGuide = (id) => {
-  router.push(`/guide/${id}`);
-};
-</script>
-
 <template>
   <div class="home">
     <header class="header">
       <h1>📚 Loomi Lair Study Guide</h1>
-      <p class="subtitle">Your comprehensive learning resource</p>
+      <p class="subtitle">前端学习与知识库（示例页面）</p>
     </header>
 
     <div class="search-container">
       <input 
         v-model="searchQuery"
         type="text" 
-        placeholder="🔍 Search guides..." 
+        placeholder="🔍 搜索指南..." 
         class="search-input"
       />
     </div>
 
     <div v-if="loading" class="loading">
       <div class="spinner"></div>
-      <p>Loading guides...</p>
+      <p>正在加载指南...</p>
     </div>
 
     <div v-else class="guides-grid">
@@ -63,16 +29,56 @@ const openGuide = (id) => {
         <h2 class="guide-title">{{ guide.title }}</h2>
         <p class="guide-description">{{ guide.description }}</p>
         <div class="guide-footer">
-          <span class="read-more">Read more →</span>
+          <span class="read-more">阅读更多 →</span>
         </div>
       </div>
     </div>
 
     <div v-if="!loading && filteredGuides().length === 0" class="no-results">
-      <p>No guides found matching "{{ searchQuery }}"</p>
+      <p>未找到与 "{{ searchQuery }}" 匹配的指南</p>
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+// ===== 路由与状态 =====
+const router = useRouter()
+const guides = ref([])
+const searchQuery = ref('')
+const loading = ref(true)
+
+// ===== 数据获取 =====
+// 说明: 页面初始化时从静态 JSON 中读取指南索引
+onMounted(async () => {
+  try {
+    const response = await fetch('/markdown/index.json')
+    guides.value = await response.json()
+  // 失败时仅记录日志, 不阻断渲染
+  } catch (error) {
+    console.error('加载指南索引失败:', error)
+  } finally {
+    loading.value = false
+  }
+})
+
+// ===== 过滤逻辑 =====
+const filteredGuides = () => {
+  if (!searchQuery.value) return guides.value
+  const query = searchQuery.value.toLowerCase()
+  return guides.value.filter(guide => 
+    guide.title.toLowerCase().includes(query) || 
+    guide.description.toLowerCase().includes(query)
+  )
+}
+
+// ===== 事件处理 =====
+const openGuide = (id) => {
+  router.push(`/guide/${id}`)
+}
+</script>
 
 <style scoped>
 .home {
@@ -147,7 +153,7 @@ const openGuide = (id) => {
 }
 
 .guide-card {
-  background: white;
+  background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   padding: 1.5rem;

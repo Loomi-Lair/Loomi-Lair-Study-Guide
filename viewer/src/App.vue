@@ -1,19 +1,12 @@
-<script setup>
-import { RouterView } from 'vue-router';
-</script>
-
 <template>
+  <!-- 页面仅负责渲染路由出口，遵循“一个文件只干一件事”的职责原则 -->
   <RouterView />
 </template>
 
-<style>
-* {
-  box-sizing: border-box;
-}
+<script setup>
+import { RouterView } from 'vue-router'
+</script>
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: #ffffff;
-}
+<style>
+/* 将通用样式上移到全局样式文件，避免在根组件重复定义 */
 </style>
