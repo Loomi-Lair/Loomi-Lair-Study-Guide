@@ -60,8 +60,8 @@ const loadMarkdown = async () => {
 };
 
 const renderedMarkdown = computed(() => {
-  const html = marked(content.value);
-  return DOMPurify.sanitize(html);
+  const unsafeHtml = marked(content.value);
+  return DOMPurify.sanitize(unsafeHtml);
 });
 
 const goHome = () => {
