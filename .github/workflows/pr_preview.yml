@@ -1,0 +1,49 @@
+name: Deploy PR Preview to Surge.sh
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        working-directory: viewer
+        run: npm install
+
+      - name: Build project
+        working-directory: viewer
+        run: npm run build
+
+      - name: Install Surge CLI
+        run: npm install -g surge
+
+      - name: Deploy to Surge.sh
+        working-directory: viewer
+        run: surge --project ./dist --domain Loomi-Lair-HomePage-pr-${{ github.event.number }}.surge.sh
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+
+      - name: Comment PR with preview URL
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            Preview deployed: https://Loomi-Lair-HomePage-pr-${{ github.event.number }}.surge.sh
